@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     AWS_DEFAULT_REGION: us-east-1
-    AWS_ACCOUNT_ID: 489323066454
+    AWS_ACCOUNT_ID: 025707650043
     IMAGE_REPO_NAME: nodepipeline-devops
     IMAGE_TAG: latest
 
