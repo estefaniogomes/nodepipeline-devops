@@ -14,10 +14,17 @@ phases:
       - aws --version
       - echo "Region:$AWS_DEFAULT_REGION"
       - echo "Account ID:$AWS_ACCOUNT_ID"
+      - echo "Image Repo Name:$IMAGE_REPO_NAME"
       - echo "Checking AWS credentials..."
       - aws sts get-caller-identity
-      - echo "Creating ECR repository if it doesn't exist..."
-      - aws ecr describe-repositories --repository-names $IMAGE_REPO_NAME --region $AWS_DEFAULT_REGION || aws ecr create-repository --repository-name $IMAGE_REPO_NAME --region $AWS_DEFAULT_REGION
+      - echo "Checking if ECR repository exists..."
+      - |
+        if aws ecr describe-repositories --repository-names $IMAGE_REPO_NAME --region $AWS_DEFAULT_REGION 2>/dev/null; then
+          echo "Repository $IMAGE_REPO_NAME already exists"
+        else
+          echo "Repository $IMAGE_REPO_NAME does not exist, creating..."
+          aws ecr create-repository --repository-name $IMAGE_REPO_NAME --region $AWS_DEFAULT_REGION
+        fi
       - echo "Getting ECR login token..."
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
