@@ -1,5 +1,5 @@
-FROM node:12
-RUN apt-get update && apt-get install git -y && apt-get install imagemagick -y;
+FROM node:18-alpine
+RUN apk update && apk add git imagemagick
 
 WORKDIR /ecs-app
 
