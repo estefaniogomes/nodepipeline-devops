@@ -40,6 +40,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // API
 app.use('/', require('./controller/controller'));
 
+// Health check route for ECS
+app.get('/health', function(req, res) {
+    res.status(200).json({ status: 'healthy', port: port, hostname: hostname });
+});
+
+// Root route
+app.get('/', function(req, res) {
+    res.render('pages/index', {hostname : hostname, title : 'home'})
+});
+
 //Metrics
 app.get('/metrics', async (req, res) => {
     res.set('Content-Type', register.contentType);
@@ -56,6 +66,13 @@ app.get('/about', function(req, res) {
 })
 // Server
 
-app.listen(port, function () {
-    console.log('listening on port:' + port);
+app.listen(port, '0.0.0.0', function () {
+    console.log('=================================');
+    console.log('Server started successfully!');
+    console.log('Port:', port);
+    console.log('Hostname:', hostname);
+    console.log('Environment:', process.env.NODE_ENV);
+    console.log('ECS Mode:', process.env.ENV_ECS);
+    console.log('Listening on: 0.0.0.0:' + port);
+    console.log('=================================');
 });
